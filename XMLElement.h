@@ -27,18 +27,21 @@ class XMLElement{
     string tagName;                 // book
     Vector<Attribute> attributes;   // { category="children", id="40" }
     Vector<XMLElement*> children;   // {<title>...</title>, <author>...</author>}
-    
+    XMLElement* parent;             // <parent>...</parent>
+
 public:
     XMLElement(){
         tagName = "";
         attributes = {};
         children = {};        
+        parent = nullptr;
     }
     
-    XMLElement(const string& _tagName){
+    XMLElement(const string& _tagName, XMLElement* _parent){
         tagName = _tagName;
         attributes = {};
-        children = {};          
+        children = {};
+        parent = _parent;
     }
     
     void addAttribute(const Attribute& newAttribute){
@@ -47,14 +50,42 @@ public:
     
     void addChild(XMLElement* newChild){
         children.addElement(newChild);
+        newChild->parent = this;
     }
     
-    void printElement() const{
+    void printOpeningTag() const {
         cout << "<" << tagName;
         for(int i = 0; i < attributes.getNumberOfElements(); i++){
             cout << " " << attributes[i].getKey() << "=" << '"' << attributes[i].getValue() << '"';
         }
         cout << ">";
+    }
+
+    void printClosingTag() const {
+        cout << "</" << tagName << ">";
+    }
+
+    // TODO: Print NOT only the opening tag
+    void printElement() const{
+        printOpeningTag();
+        cout << endl;
+        for(int i = 0; i < children.getNumberOfElements(); i++){
+            children[i]->printElement();
+        }
+        printClosingTag();
+        cout << endl;
+    }
+
+    XMLElement* getParent() const {
+        return parent;
+    }
+
+    XMLElement* getChild(int i) const {
+        return children[i];
+    }
+
+    void makeParentNull() {
+        parent = nullptr;
     }
 };
 
