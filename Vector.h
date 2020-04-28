@@ -20,7 +20,7 @@ class Vector {
     }
 
 public:
-    bool hasElement(T element) const {
+    bool hasElement(const T& element) const {
         for (int i = 0; i < numberOfElements; i++) {
             if (arr[i] == element) {
                 return true;
@@ -64,7 +64,7 @@ public:
         delete[] arr;
     }
 
-    void addElement(T element) {
+    void addElement(const T& element) {
         if (capacity == numberOfElements) {
             resize();
         }
@@ -91,7 +91,7 @@ public:
         numberOfElements--;
     }
 
-    void removeValue(T value) {
+    void removeValue(const T& value) {
         for (int i = 0; i < numberOfElements; i++) {
             if (arr[i] == value) {
                 removeAt(i);
