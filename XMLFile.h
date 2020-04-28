@@ -21,36 +21,57 @@ public:
     void openFile(const string& _path){
         path = _path;
         ifstream in(path.c_str());
-
+     
+        XMLElement* imaginaryParentOfRoot = new XMLElement;
+        XMLElement* currentElement = imaginaryParentOfRoot;
         char currentSymbol;
 
-        while(!in.eof()){
+        while(true){
             in >> currentSymbol;
+
+            cout << "currentSymbol: " << currentSymbol << '\n';
 
             if(currentSymbol == '<'){
                 string currentTagName;
                 in >> currentTagName;
-                root = new XMLElement(currentTagName);
-
-                in >> currentSymbol;
-
-                while(currentSymbol != '>'){
-                    string attributeKey;
-                    getline(in, attributeKey, '=');     //Read attributeKey till =
-                    in.ignore();                        //Ignore one "
-                    
-                    string attributeValue;
-                    getline(in, attributeValue, '"' );
-                    
-                    Attribute newAttribute(attributeKey, attributeValue);
-                    root->addAttribute(newAttribute);
+                
+                if(currentTagName[0] == '/') {      // Тагът е затварящ
+                    if(currentElement->getParent() == imaginaryParentOfRoot) {
+                        root = imaginaryParentOfRoot->getChild(0);
+                        root->makeParentNull();
+                        delete imaginaryParentOfRoot;
+                        break;
+                    }
+                    // Ако родителя не е nullptr...
+                    currentElement = currentElement->getParent();
+                }
+                else {                              // Тагът е отварящ
+                    XMLElement* newElement = new XMLElement(currentTagName, currentElement);
+                    currentElement->addChild(newElement);
+                    currentElement = newElement;
 
                     in >> currentSymbol;
+
+                    while(currentSymbol != '>'){
+                        string attributeKey;
+                        getline(in, attributeKey, '=');     //Read attributeKey till =
+                        in.ignore();                        //Ignore one "
+                        
+                        attributeKey = currentSymbol + attributeKey;
+
+                        string attributeValue;
+                        getline(in, attributeValue, '"' );
+                        
+                        Attribute newAttribute(attributeKey, attributeValue);
+                        currentElement->addAttribute(newAttribute);
+
+                        in >> currentSymbol;
+                    }
                 }
             }
         }
 
-        // root->printElement();
+        root->printElement();
     } 
     
     void closeFile(){
