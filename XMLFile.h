@@ -12,13 +12,22 @@ class XMLFile{
     string path;
     XMLElement* root;
 
+    void deleteXMLElementsTree() {
+        root->deleteAllChildren();
+        delete root;
+        root = nullptr;
+    }
+
 public:
     XMLFile(){
         path = "";
         root = nullptr;
     }
   
-    // TODO: Fix
+    ~XMLFile() {
+        deleteXMLElementsTree();
+    }
+
     void openFile(const string& _path){
         path = _path;
         ifstream in(path.c_str());
@@ -86,14 +95,18 @@ public:
                 currentElement->setContent(content);
             }
         }
-
-        // root->printElement(cout, 0);
     } 
     
     void closeFile(){
+        ofstream out(path.c_str());
+        
+        root->printElement(out);
+        
+        out.close();
+
         path = "";
-        //TODO
-        root = nullptr;
+        
+        deleteXMLElementsTree();
     }   
 };
 

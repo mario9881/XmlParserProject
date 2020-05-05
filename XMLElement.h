@@ -78,7 +78,7 @@ public:
         out << "</" << tagName << ">";
     }
 
-    void printElement(ostream& out, int spaces) const{
+    void printElement(ostream& out, int spaces = 0) const{
         if(children.getNumberOfElements() == 0) {
             printNSpaces(out, spaces);
             printOpeningTag(out);
@@ -111,6 +111,13 @@ public:
 
     void makeParentNull() {
         parent = nullptr;
+    }
+
+    void deleteAllChildren() {
+        for(int i = 0; i < children.getNumberOfElements(); i++){
+            children[i]->deleteAllChildren();
+            delete children[i];
+        }
     }
 };
 
