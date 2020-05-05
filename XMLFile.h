@@ -87,7 +87,7 @@ public:
             }
         }
 
-        root->printElement(0);
+        // root->printElement(cout, 0);
     } 
     
     void closeFile(){

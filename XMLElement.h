@@ -1,11 +1,11 @@
 #ifndef XMLELEMENT_H
 #define XMLELEMENT_H
-#include<iostream>
+#include<fstream>
 #include<string>
 #include"Vector.h"
 #include"Attribute.h"
-using std::cout;
 using std::endl;
+using std::ostream;
 using std::string;
 
 /*
@@ -30,9 +30,9 @@ class XMLElement{
     XMLElement* parent;             // <parent>...</parent>
     string content;                 // Harry Potter
 
-    void printNSpaces(int n) const{
+    void printNSpaces(ostream& out, int n) const{
         for(int i = 0; i < n; i++){
-            cout << " ";
+            out << " ";
         }
     }
 
@@ -66,38 +66,38 @@ public:
         newChild->parent = this;
     }
     
-    void printOpeningTag() const {
-        cout << "<" << tagName;
+    void printOpeningTag(ostream& out) const {
+        out << "<" << tagName;
         for(int i = 0; i < attributes.getNumberOfElements(); i++){
-            cout << " " << attributes[i].getKey() << "=" << '"' << attributes[i].getValue() << '"';
+            out << " " << attributes[i].getKey() << "=" << '"' << attributes[i].getValue() << '"';
         }
-        cout << ">";
+        out << ">";
     }
 
-    void printClosingTag() const {
-        cout << "</" << tagName << ">";
+    void printClosingTag(ostream& out) const {
+        out << "</" << tagName << ">";
     }
 
-    void printElement(int spaces) const{
+    void printElement(ostream& out, int spaces) const{
         if(children.getNumberOfElements() == 0) {
-            printNSpaces(spaces);
-            printOpeningTag();
-            cout << content;
-            printClosingTag();
-            cout<<endl;
+            printNSpaces(out, spaces);
+            printOpeningTag(out);
+            out << content;
+            printClosingTag(out);
+            out<<endl;
         }
         else {
-            printNSpaces(spaces);
-            printOpeningTag();
-            cout << endl;
+            printNSpaces(out, spaces);
+            printOpeningTag(out);
+            out << endl;
 
             for(int i = 0; i < children.getNumberOfElements(); i++){
-                children[i]->printElement(spaces + 4);
+                children[i]->printElement(out, spaces + 4);
             }        
             
-            printNSpaces(spaces);
-            printClosingTag();
-            cout << endl;
+            printNSpaces(out, spaces);
+            printClosingTag(out);
+            out << endl;
         }
     }
 

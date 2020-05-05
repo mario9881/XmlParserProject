@@ -6,7 +6,6 @@
 using namespace std;
 
 int main() {
-
     XMLFile file01;
     file01.openFile("example.xml");
     return 0;
