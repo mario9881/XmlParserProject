@@ -28,6 +28,13 @@ class XMLElement{
     Vector<Attribute> attributes;   // { category="children", id="40" }
     Vector<XMLElement*> children;   // {<title>...</title>, <author>...</author>}
     XMLElement* parent;             // <parent>...</parent>
+    string content;                 // Harry Potter
+
+    void printNSpaces(int n) const{
+        for(int i = 0; i < n; i++){
+            cout << " ";
+        }
+    }
 
 public:
     XMLElement(){
@@ -35,13 +42,19 @@ public:
         attributes = {};
         children = {};        
         parent = nullptr;
+        content = "";
     }
     
-    XMLElement(const string& _tagName, XMLElement* _parent){
+    XMLElement(const string& _tagName, XMLElement* _parent, const string& _content){
         tagName = _tagName;
         attributes = {};
         children = {};
         parent = _parent;
+        content = _content;
+    }
+
+    void setContent(const string& _content){
+        content = _content;
     }
     
     void addAttribute(const Attribute& newAttribute){
@@ -65,15 +78,27 @@ public:
         cout << "</" << tagName << ">";
     }
 
-    // TODO: Print NOT only the opening tag
-    void printElement() const{
-        printOpeningTag();
-        cout << endl;
-        for(int i = 0; i < children.getNumberOfElements(); i++){
-            children[i]->printElement();
+    void printElement(int spaces) const{
+        if(children.getNumberOfElements() == 0) {
+            printNSpaces(spaces);
+            printOpeningTag();
+            cout << content;
+            printClosingTag();
+            cout<<endl;
         }
-        printClosingTag();
-        cout << endl;
+        else {
+            printNSpaces(spaces);
+            printOpeningTag();
+            cout << endl;
+
+            for(int i = 0; i < children.getNumberOfElements(); i++){
+                children[i]->printElement(spaces + 4);
+            }        
+            
+            printNSpaces(spaces);
+            printClosingTag();
+            cout << endl;
+        }
     }
 
     XMLElement* getParent() const {
