@@ -2,6 +2,7 @@
 #define XMLFILE_H
 #include<fstream>
 #include<string>
+#include"functions.h"
 #include"XMLElement.h"
 using std::ifstream;
 using std::ofstream;
@@ -29,13 +30,18 @@ public:
         while(true){
             in >> currentSymbol;
 
-            cout << "currentSymbol: " << currentSymbol << '\n';
+            //cout << "currentSymbol: " << currentSymbol << '\n';
 
             if(currentSymbol == '<'){
-                string currentTagName;
-                in >> currentTagName;
-                
-                if(currentTagName[0] == '/') {      // Тагът е затварящ
+                string newTagName;
+
+                char tagNameSymbol;
+                while(in.peek() != ' ' && in.peek() != '>') {
+                    in >> tagNameSymbol;
+                    newTagName.push_back(tagNameSymbol);
+                }
+
+                if(newTagName[0] == '/') {      // Тагът е затварящ
                     if(currentElement->getParent() == imaginaryParentOfRoot) {
                         root = imaginaryParentOfRoot->getChild(0);
                         root->makeParentNull();
@@ -46,7 +52,7 @@ public:
                     currentElement = currentElement->getParent();
                 }
                 else {                              // Тагът е отварящ
-                    XMLElement* newElement = new XMLElement(currentTagName, currentElement);
+                    XMLElement* newElement = new XMLElement(newTagName, currentElement, "");
                     currentElement->addChild(newElement);
                     currentElement = newElement;
 
@@ -60,7 +66,7 @@ public:
                         attributeKey = currentSymbol + attributeKey;
 
                         string attributeValue;
-                        getline(in, attributeValue, '"' );
+                        getline(in, attributeValue, '"');
                         
                         Attribute newAttribute(attributeKey, attributeValue);
                         currentElement->addAttribute(newAttribute);
@@ -69,9 +75,19 @@ public:
                     }
                 }
             }
+            else {
+                string content;
+                content.push_back(currentSymbol);
+
+                while(in.peek() != '<') {
+                    content.push_back(in.get());
+                }
+                content = trim(content);
+                currentElement->setContent(content);
+            }
         }
 
-        root->printElement();
+        root->printElement(0);
     } 
     
     void closeFile(){
