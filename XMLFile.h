@@ -2,15 +2,19 @@
 #define XMLFILE_H
 #include<fstream>
 #include<string>
+#include<map>
 #include"functions.h"
 #include"XMLElement.h"
 using std::ifstream;
 using std::ofstream;
 using std::string;
+using std::map;
+using std::to_string;
 
 class XMLFile{
     string path;
     XMLElement* root;
+    map<string, XMLElement*> elementsWithIDs;
 
     void deleteXMLElementsTree() {
         root->deleteAllChildren();
@@ -18,10 +22,41 @@ class XMLFile{
         root = nullptr;
     }
 
+    bool idExists(const string& id) const {
+        return elementsWithIDs.count(id);
+    }
+
+    string firstFreeId() const{
+        int i = 0;
+        while(idExists(to_string(i))){
+            i++;
+        }
+        return to_string(i);
+    }
+
+    int numberOfIdsStartingWith(const string& givenId) const {
+        int count = 0;
+
+        for(auto pair : elementsWithIDs) {
+            if(startsWith(givenId + "_", pair.first)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    string idWithSuffix(const string& givenId) const{
+        
+        int numberOfIdsStartingWithGivenId = numberOfIdsStartingWith(givenId);
+
+        return givenId + "_" + to_string(numberOfIdsStartingWithGivenId + 1);
+    }
+
 public:
     XMLFile(){
         path = "";
         root = nullptr;
+        elementsWithIDs = map<string, XMLElement*>();
     }
   
     ~XMLFile() {
@@ -82,6 +117,18 @@ public:
 
                         in >> currentSymbol;
                     }
+
+                    string givenId = newElement->getValueOfAttribute("id");
+
+                    if(givenId == "ERROR") {
+                        elementsWithIDs[firstFreeId()] = newElement;
+                    }
+                    else if(idExists(givenId)) {
+                        elementsWithIDs[idWithSuffix(givenId)] = newElement;
+                    }
+                    else {
+                        elementsWithIDs[givenId] = newElement;
+                    }
                 }
             }
             else {
@@ -107,7 +154,16 @@ public:
         path = "";
         
         deleteXMLElementsTree();
-    }   
+
+        elementsWithIDs.clear();
+    } 
+
+    //For testing
+    void printElemWithIds() const{
+        for(auto pair : elementsWithIDs){
+            cout << pair.first << " " << pair.second->getTagName() << endl;
+        }
+    }
 };
 
 #endif
