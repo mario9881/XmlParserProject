@@ -37,4 +37,11 @@ string trim(const string& str) {
     return str.substr(first, substr_length);
 }
 
+// Sources:
+// https://stackoverflow.com/questions/1878001/how-do-i-check-if-a-c-stdstring-starts-with-a-certain-string-and-convert-a
+// http://www.cplusplus.com/reference/string/string/rfind/
+bool startsWith(const string& shorter, const string& longer) {
+    return longer.rfind(shorter, 0) == 0; 
+}
+
 #endif
