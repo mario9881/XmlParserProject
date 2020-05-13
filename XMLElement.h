@@ -101,6 +101,10 @@ public:
         }
     }
 
+    string getTagName() const{
+        return tagName;
+    }
+
     XMLElement* getParent() const {
         return parent;
     }
@@ -118,6 +122,15 @@ public:
             children[i]->deleteAllChildren();
             delete children[i];
         }
+    }
+
+    string getValueOfAttribute(const string& key) const{
+        for(int i = 0; i < attributes.getNumberOfElements(); i++){
+            if(attributes[i].getKey() == key){
+                return attributes[i].getValue();
+            }
+        }
+        return "ERROR";
     }
 };
 
