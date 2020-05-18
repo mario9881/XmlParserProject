@@ -223,7 +223,15 @@ public:
     }
 
     void printElementText(){
+        string id;
+        cin >> id;
 
+        if(idExists(id)){
+            cout << elementsWithIDs[id]->getContent();
+        }
+        else{
+            cout << "Invalid ID" << endl;
+        }
     }
 
     void deleteAttribute(){
