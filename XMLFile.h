@@ -63,8 +63,11 @@ public:
         deleteXMLElementsTree();
     }
 
-    void openFile(const string& _path){
-        path = _path;
+    void openFile(){
+        string openedPath;
+        cin >> openedPath;
+
+        path = openedPath;
         ifstream in(path.c_str());
      
         XMLElement* imaginaryParentOfRoot = new XMLElement;
@@ -180,7 +183,7 @@ public:
     }
 
     void help(){
-        
+
     }
 
     void printXML(){
@@ -188,7 +191,23 @@ public:
     }
 
     void selectAttribute(){
+        string id;
+        cin >> id;
+        
+        string key;
+        cin >> key;
 
+        if(idExists(id)){
+            if(elementsWithIDs[id]->getValueOfAttribute(key) != "ERROR"){
+                cout << elementsWithIDs[id]->getValueOfAttribute(key);
+            }
+            else{
+                cout << "Invalid key" << endl;
+            }
+        }
+        else{
+            cout << "Invalid ID" << endl;
+        }
     }
 
     void setAttribute(){
