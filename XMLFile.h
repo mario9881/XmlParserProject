@@ -145,12 +145,6 @@ public:
     } 
     
     void closeFile(){
-        ofstream out(path.c_str());
-        
-        root->printElement(out);
-        
-        out.close();
-
         path = "";
         
         deleteXMLElementsTree();
@@ -163,6 +157,66 @@ public:
         for(auto pair : elementsWithIDs){
             cout << pair.first << " " << pair.second->getTagName() << endl;
         }
+    }
+
+    void saveFile(){
+        ofstream out(path.c_str());
+        
+        root->printElement(out);
+        
+        out.close();
+    }
+
+    void saveAsFile(){
+        string newPath;
+
+        cin >> newPath;
+
+        ofstream out(newPath.c_str());
+
+        root->printElement(out);
+        
+        out.close();
+    }
+
+    void help(){
+        
+    }
+
+    void printXML(){
+        root->printElement(cout);
+    }
+
+    void selectAttribute(){
+
+    }
+
+    void setAttribute(){
+
+    }
+
+    void childrenList() {
+
+    }
+
+    void printChild(){
+
+    }
+
+    void printElementText(){
+
+    }
+
+    void deleteAttribute(){
+
+    }
+
+    void newChild(){
+
+    }
+
+    void xpath(){
+
     }
 };
 
