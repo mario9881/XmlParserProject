@@ -211,7 +211,18 @@ public:
     }
 
     void setAttribute(){
+        string id;
+        string key;
+        string value;
 
+        cin >> id >> key >> value;
+
+        if(idExists(id)){
+            elementsWithIDs[id]->setValueOfAttribute(key, value);    
+        }
+        else{
+            cout << "Invalid ID" << endl;
+        }
     }
 
     void childrenList() {
@@ -219,7 +230,17 @@ public:
     }
 
     void printChild(){
+        string id;
+        int n;
 
+        cin >> id >> n;
+
+        if(idExists(id)){
+            elementsWithIDs[id]->getChild(n)->printElement(cout);
+        }
+        else{
+            cout << "Invalid ID" << endl;
+        }
     }
 
     void printElementText(){
@@ -235,10 +256,35 @@ public:
     }
 
     void deleteAttribute(){
+        string id;
+        string key;
+        cin >> id >> key;
 
+        if(idExists(id)){
+            if(elementsWithIDs[id]->getValueOfAttribute(key) != "ERROR"){
+                elementsWithIDs[id]->deleteAttribute(key);
+            }
+            else{
+                cout << "Invalid key" << endl;
+            }
+        }
+        else{
+            cout << "Invalid ID" << endl;
+        }
     }
 
     void newChild(){
+        string id;
+        cin >> id;
+
+        if(idExists(id)){
+            XMLElement* newChild = new XMLElement("newchild");
+            elementsWithIDs[id]->addChild(newChild);
+            elementsWithIDs[firstFreeId()] = newChild;
+        }
+        else{
+            cout << "Invalid ID" << endl;
+        }
 
     }
 

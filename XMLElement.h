@@ -53,6 +53,14 @@ public:
         content = _content;
     }
 
+    XMLElement(const string& _tagName){
+        tagName = _tagName;
+        attributes = {};
+        children = {};        
+        parent = nullptr;
+        content = "";
+    }
+
     void setContent(const string& _content){
         content = _content;
     }
@@ -61,6 +69,14 @@ public:
         attributes.addElement(newAttribute);
     }
     
+    void deleteAttribute(const string& key){
+        for(int i = 0; i < attributes.getNumberOfElements(); i++){
+            if (attributes[i].getKey() == key) {
+                attributes.removeAt(i);
+            }
+        }
+    }
+
     void addChild(XMLElement* newChild){
         children.addElement(newChild);
         newChild->parent = this;
@@ -105,6 +121,10 @@ public:
         return tagName;
     }
 
+    string getContent() const{
+        return content;
+    }
+
     XMLElement* getParent() const {
         return parent;
     }
@@ -131,6 +151,16 @@ public:
             }
         }
         return "ERROR";
+    }
+
+    void setValueOfAttribute(const string& key, const string& value) {
+         for(int i = 0; i < attributes.getNumberOfElements(); i++){
+             if(attributes[i].getKey() == key){
+                 attributes[i].setValue(value);
+                 return;
+             }
+         }
+         addAttribute(Attribute(key, value));
     }
 };
 

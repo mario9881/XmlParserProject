@@ -6,21 +6,6 @@
 using namespace std;
 
 int main() {
-
-    string s;
-
-    while(true) {
-        cin >> s;
-    }
-
-    return 0;
-
-
-
-    XMLFile file01;
-    file01.openFile("example.xml");
-    return 0;
-
     XMLFile file;
 
     bool weHaveEnteredExit = false;
@@ -29,9 +14,7 @@ int main() {
     while (!weHaveEnteredExit) {
         cin >> command;
         if (command == "open") {
-            string openedPath;
-            cin >> openedPath;
-            file.openFile(openedPath);
+            file.openFile();
         }
         else if (command == "close") {
             file.closeFile();
