@@ -39,7 +39,7 @@ int main() {
             file.setAttribute();
         }
         else if (command == "children") {
-            file.childrenList();
+            file.printChildrenAttributes();
         }
         else if (command == "child") {
             file.printChild();

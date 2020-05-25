@@ -225,7 +225,18 @@ public:
         }
     }
 
-    void childrenList() {
+    void printChildrenAttributes() {
+        string id;
+        cin >> id;
+
+        if(idExists(id)){
+            for(int i = 0; i < elementsWithIDs[id]->getNumberOfChildren(); i++){
+                elementsWithIDs[id]->getChild(i)->printElementAttributes();
+            }
+        }
+        else{
+            cout << "Invalid ID" << endl;
+        }
 
     }
 

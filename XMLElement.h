@@ -117,6 +117,12 @@ public:
         }
     }
 
+    void printElementAttributes() const{
+        for(int i = 0; i < attributes.getNumberOfElements(); i++){
+            cout << attributes[i].getKey() << '=' <<  '"' << attributes[i].getValue() << '"' << ' ';
+        }
+    }
+
     string getTagName() const{
         return tagName;
     }
@@ -131,6 +137,10 @@ public:
 
     XMLElement* getChild(int i) const {
         return children[i];
+    }
+
+    int getNumberOfChildren() const{
+        return children.getNumberOfElements();
     }
 
     void makeParentNull() {
