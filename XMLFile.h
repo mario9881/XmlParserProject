@@ -1,5 +1,6 @@
 #ifndef XMLFILE_H
 #define XMLFILE_H
+#include<iostream>
 #include<fstream>
 #include<string>
 #include<map>
@@ -10,6 +11,7 @@ using std::ofstream;
 using std::string;
 using std::map;
 using std::to_string;
+using std::cin;
 
 class XMLFile{
     string path;
