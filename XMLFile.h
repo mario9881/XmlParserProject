@@ -54,6 +54,28 @@ class XMLFile{
         return givenId + "_" + to_string(numberOfIdsStartingWithGivenId + 1);
     }
 
+    void addElementToMap(XMLElement* newElement){
+        string givenId = newElement->getValueOfAttribute("id");
+
+        if(givenId == "ERROR") {
+            elementsWithIDs[firstFreeId()] = newElement;
+        }
+        else if(idExists(givenId)) {
+            elementsWithIDs[idWithSuffix(givenId)] = newElement;
+        }
+        else {
+            elementsWithIDs[givenId] = newElement;
+        }
+    }
+
+    void readTagName(string& newTagName, istream& in){
+        char tagNameSymbol;
+        while(in.peek() != ' ' && in.peek() != '>') {
+            in >> tagNameSymbol;
+            newTagName.push_back(tagNameSymbol);
+        }
+    }
+
 public:
     XMLFile(){
         path = "";
@@ -79,16 +101,10 @@ public:
         while(true){
             in >> currentSymbol;
 
-            //cout << "currentSymbol: " << currentSymbol << '\n';
-
             if(currentSymbol == '<'){
                 string newTagName;
 
-                char tagNameSymbol;
-                while(in.peek() != ' ' && in.peek() != '>') {
-                    in >> tagNameSymbol;
-                    newTagName.push_back(tagNameSymbol);
-                }
+                readTagName(newTagName, in);
 
                 if(newTagName[0] == '/') {      // Тагът е затварящ
                     if(currentElement->getParent() == imaginaryParentOfRoot) {
@@ -105,46 +121,13 @@ public:
                     currentElement->addChild(newElement);
                     currentElement = newElement;
 
-                    in >> currentSymbol;
+                    currentElement->readAttributes(in);
 
-                    while(currentSymbol != '>'){
-                        string attributeKey;
-                        getline(in, attributeKey, '=');     //Read attributeKey till =
-                        in.ignore();                        //Ignore one "
-                        
-                        attributeKey = currentSymbol + attributeKey;
-
-                        string attributeValue;
-                        getline(in, attributeValue, '"');
-                        
-                        Attribute newAttribute(attributeKey, attributeValue);
-                        currentElement->addAttribute(newAttribute);
-
-                        in >> currentSymbol;
-                    }
-
-                    string givenId = newElement->getValueOfAttribute("id");
-
-                    if(givenId == "ERROR") {
-                        elementsWithIDs[firstFreeId()] = newElement;
-                    }
-                    else if(idExists(givenId)) {
-                        elementsWithIDs[idWithSuffix(givenId)] = newElement;
-                    }
-                    else {
-                        elementsWithIDs[givenId] = newElement;
-                    }
+                    addElementToMap(currentElement);
                 }
             }
             else {
-                string content;
-                content.push_back(currentSymbol);
-
-                while(in.peek() != '<') {
-                    content.push_back(in.get());
-                }
-                content = trim(content);
-                currentElement->setContent(content);
+                currentElement->readContent(in, currentSymbol);
             }
         }
     } 

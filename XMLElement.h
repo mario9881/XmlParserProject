@@ -6,6 +6,7 @@
 #include"Attribute.h"
 using std::endl;
 using std::ostream;
+using std::istream;
 using std::string;
 
 /*
@@ -61,6 +62,7 @@ public:
         content = "";
     }
 
+
     void setContent(const string& _content){
         content = _content;
     }
@@ -82,6 +84,7 @@ public:
         newChild->parent = this;
     }
     
+
     void printOpeningTag(ostream& out) const {
         out << "<" << tagName;
         for(int i = 0; i < attributes.getNumberOfElements(); i++){
@@ -123,6 +126,7 @@ public:
         }
     }
 
+
     string getTagName() const{
         return tagName;
     }
@@ -143,6 +147,7 @@ public:
         return children.getNumberOfElements();
     }
 
+
     void makeParentNull() {
         parent = nullptr;
     }
@@ -153,6 +158,7 @@ public:
             delete children[i];
         }
     }
+
 
     string getValueOfAttribute(const string& key) const{
         for(int i = 0; i < attributes.getNumberOfElements(); i++){
@@ -171,6 +177,39 @@ public:
              }
          }
          addAttribute(Attribute(key, value));
+    }
+
+    void readAttributes(istream& in){
+        char currentSymbol;
+        
+        in >> currentSymbol;
+
+        while(currentSymbol != '>'){
+            string attributeKey;
+            getline(in, attributeKey, '=');     //Read attributeKey till =
+            in.ignore();                        //Ignore one "
+            
+            attributeKey = currentSymbol + attributeKey;
+
+            string attributeValue;
+            getline(in, attributeValue, '"');
+            
+            Attribute newAttribute(attributeKey, attributeValue);
+            addAttribute(newAttribute);
+
+            in >> currentSymbol;
+        }
+    }
+
+    void readContent(istream& in, char currentSymbol){
+        string content;
+        content.push_back(currentSymbol);
+
+        while(in.peek() != '<') {
+            content.push_back(in.get());
+        }
+        content = trim(content);
+        setContent(content);
     }
 };
 
